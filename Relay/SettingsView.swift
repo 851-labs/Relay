@@ -44,6 +44,18 @@ private struct AppDetailView: View {
     var body: some View {
         Form {
             Section {
+                VStack(spacing: 8) {
+                    AppIcon(bundleID: app.bundleID, size: 96)
+                    Text(app.name)
+                        .font(.largeTitle.weight(.bold))
+                    Text("^[\(app.commands.count) command](inflect: true)")
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+            }
+
+            Section("Commands") {
                 ForEach(app.commands) { command in
                     Toggle(isOn: Binding(
                         get: { store.isEnabled(command) },
@@ -51,26 +63,6 @@ private struct AppDetailView: View {
                     )) {
                         Label(command.title, systemImage: command.symbol ?? "bolt.horizontal")
                     }
-                }
-            } header: {
-                // Lives in the section header so it scrolls with the content but isn't wrapped in a card.
-                VStack(alignment: .leading, spacing: 0) {
-                    VStack(spacing: 8) {
-                        AppIcon(bundleID: app.bundleID, size: 96)
-                        Text(app.name)
-                            .font(.largeTitle.weight(.bold))
-                            .foregroundStyle(.primary)
-                        Text("^[\(app.commands.count) command](inflect: true)")
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 24)
-                    .padding(.bottom, 32)
-
-                    Text("Commands")
-                        .font(.headline)
-                        .foregroundStyle(.primary)
                 }
             }
         }
