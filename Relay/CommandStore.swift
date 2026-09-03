@@ -16,22 +16,29 @@ struct RelayedApp: Identifiable, Hashable {
 final class CommandStore {
     static let shared = CommandStore()
 
-    private static let disabledKey = "disabledCommandIDs"
+    private static let disabledCommandsKey = "disabledCommandIDs"
+    private static let disabledAppsKey = "disabledAppBundleIDs"
 
     private(set) var commands: [Command] = []
+    /// Individually switched-off commands. Preserved while their app is off so re-enabling the app restores them.
     private(set) var disabledIDs: Set<String> {
-        didSet { UserDefaults.standard.set(Array(disabledIDs).sorted(), forKey: Self.disabledKey) }
+        didSet { UserDefaults.standard.set(Array(disabledIDs).sorted(), forKey: Self.disabledCommandsKey) }
+    }
+    /// Apps switched off wholesale; none of their commands are exposed regardless of per-command state.
+    private(set) var disabledAppIDs: Set<String> {
+        didSet { UserDefaults.standard.set(Array(disabledAppIDs).sorted(), forKey: Self.disabledAppsKey) }
     }
 
     @ObservationIgnored private var reindexTask: Task<Void, Never>?
 
     private init() {
-        disabledIDs = Set(UserDefaults.standard.stringArray(forKey: Self.disabledKey) ?? [])
+        disabledIDs = Set(UserDefaults.standard.stringArray(forKey: Self.disabledCommandsKey) ?? [])
+        disabledAppIDs = Set(UserDefaults.standard.stringArray(forKey: Self.disabledAppsKey) ?? [])
     }
 
-    /// Commands the user hasn't switched off — the only ones indexed, queryable, or listed in the menu.
+    /// Commands whose app is on and that aren't individually off — the only ones indexed, queryable, or listed in the menu.
     var enabledCommands: [Command] {
-        commands.filter { !disabledIDs.contains($0.id) }
+        commands.filter { !disabledAppIDs.contains($0.bundleID) && !disabledIDs.contains($0.id) }
     }
 
     /// Catalog grouped by target app, in first-appearance order.
@@ -50,12 +57,16 @@ final class CommandStore {
     }
 
     func setEnabled(_ enabled: Bool, for command: Command) {
-        setEnabled(enabled, for: [command])
+        if enabled { disabledIDs.remove(command.id) } else { disabledIDs.insert(command.id) }
+        scheduleReindex()
     }
 
-    func setEnabled(_ enabled: Bool, for commands: [Command]) {
-        let ids = commands.map(\.id)
-        if enabled { disabledIDs.subtract(ids) } else { disabledIDs.formUnion(ids) }
+    func isAppEnabled(_ bundleID: String) -> Bool {
+        !disabledAppIDs.contains(bundleID)
+    }
+
+    func setAppEnabled(_ enabled: Bool, bundleID: String) {
+        if enabled { disabledAppIDs.remove(bundleID) } else { disabledAppIDs.insert(bundleID) }
         scheduleReindex()
     }
 

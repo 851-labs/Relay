@@ -105,17 +105,17 @@ private struct AppDetailView: View {
     let app: RelayedApp
     private let store = CommandStore.shared
 
-    private var allEnabled: Binding<Bool> {
+    private var appEnabled: Binding<Bool> {
         Binding(
-            get: { app.commands.allSatisfy(store.isEnabled) },
-            set: { store.setEnabled($0, for: app.commands) }
+            get: { store.isAppEnabled(app.bundleID) },
+            set: { store.setAppEnabled($0, bundleID: app.bundleID) }
         )
     }
 
     var body: some View {
         Form {
             Section {
-                Toggle(isOn: allEnabled) {
+                Toggle(isOn: appEnabled) {
                     Label {
                         Text(app.name)
                         Text("Expose ^[\(app.commands.count) command](inflect: true) from \(app.name) to Spotlight.")
@@ -142,6 +142,8 @@ private struct AppDetailView: View {
                 }
             }
         }
+            // Dimmed and inert while the app is off; per-command state is kept for when it comes back.
+            .disabled(!store.isAppEnabled(app.bundleID))
         .formStyle(.grouped)
         .toggleStyle(.switch)
         .navigationTitle(app.name)
