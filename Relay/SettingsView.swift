@@ -29,14 +29,20 @@ struct SettingsView: View {
                 }
             }
             .toolbar {
-                // Adjacent items in one group share a single glass capsule, like System Settings' back/forward.
-                ToolbarItemGroup(placement: .navigation) {
-                    Button { navigate(by: -1) } label: { Label("Back", systemImage: "chevron.left") }
-                        .disabled(!history.canGoBack)
-                        .keyboardShortcut("[", modifiers: .command)
-                    Button { navigate(by: 1) } label: { Label("Forward", systemImage: "chevron.right") }
-                        .disabled(!history.canGoForward)
-                        .keyboardShortcut("]", modifiers: .command)
+                ToolbarItem(placement: .navigation) {
+                    // The native back/forward control (System Settings, Xcode): AppKit draws the
+                    // grouped capsule, divider, sizing, and disabled dimming.
+                    ControlGroup {
+                        Button { navigate(by: -1) } label: { Label("Back", systemImage: "chevron.left") }
+                            .disabled(!history.canGoBack)
+                            .help("Back")
+                            .keyboardShortcut("[", modifiers: .command)
+                        Button { navigate(by: 1) } label: { Label("Forward", systemImage: "chevron.right") }
+                            .disabled(!history.canGoForward)
+                            .help("Forward")
+                            .keyboardShortcut("]", modifiers: .command)
+                    }
+                    .controlGroupStyle(.navigation)
                 }
             }
         }
