@@ -14,6 +14,7 @@ struct SettingsView: View {
                 }
             }
             .navigationSplitViewColumnWidth(min: 200, ideal: 220)
+            .toolbar(removing: .sidebarToggle)
         } detail: {
             if let app = store.apps.first(where: { $0.bundleID == selectedBundleID }) {
                 AppDetailView(app: app)
