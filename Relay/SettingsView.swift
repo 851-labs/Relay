@@ -92,15 +92,19 @@ private struct AppDetailView: View {
     var body: some View {
         Form {
             Section {
-                VStack(spacing: 8) {
-                    AppIcon(bundleID: app.bundleID, size: 56)
-                    Text(app.name)
-                        .font(.title2.weight(.bold))
-                    Text("^[\(app.commands.count) command](inflect: true)")
-                        .foregroundStyle(.secondary)
+                Toggle(isOn: allEnabled) {
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(app.name)
+                                .font(.headline)
+                            Text("Expose ^[\(app.commands.count) command](inflect: true) from \(app.name) to Spotlight.")
+                                .foregroundStyle(.secondary)
+                        }
+                    } icon: {
+                        AppIcon(bundleID: app.bundleID, size: 40)
+                    }
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
+                .padding(.vertical, 4)
             }
 
             Section("Commands") {
@@ -117,15 +121,6 @@ private struct AppDetailView: View {
         .formStyle(.grouped)
         .toggleStyle(.switch)
         .navigationTitle(app.name)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Toggle("Enable \(app.name)", isOn: allEnabled)
-                    .toggleStyle(.switch)
-                    .controlSize(.small)
-                    .labelsHidden()
-                    .help("Enable or disable all \(app.name) commands")
-            }
-        }
     }
 }
 
