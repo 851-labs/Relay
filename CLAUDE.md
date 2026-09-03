@@ -1,5 +1,7 @@
 # Relay — working notes for Claude
 
+- Local checkout lives at `~/repos/851-labs/relay` (cloned with `pd clone`).
+
 - Commit and push every change to `origin/main` (github.com/851-labs/relay) as soon as it's made. Don't batch or wait to be asked.
 - Bundle ID is `so.alexandru.relay`. Build with `xcodegen generate` then `xcodebuild -scheme Relay -configuration Release -derivedDataPath build build`; install by copying to `/Applications/Relay.app` and relaunching (Relay reindexes Spotlight on launch).
 - `build/` and `*.xcodeproj` are gitignored; `project.yml` is the source of truth.
