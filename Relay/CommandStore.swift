@@ -86,7 +86,17 @@ final class CommandStore {
             commands = []
         }
 
+        migrateWholeAppDisables()
         IconCache.prime(bundleIDs: Set(commands.map(\.bundleID)))
+    }
+
+    /// Before app-level switches existed, turning an app off disabled every one of its commands individually.
+    /// Reinterpret that state as "app off" so the per-command switches come back on.
+    private func migrateWholeAppDisables() {
+        for app in apps where !app.commands.isEmpty && app.commands.allSatisfy({ disabledIDs.contains($0.id) }) {
+            disabledIDs.subtract(app.commands.map(\.id))
+            disabledAppIDs.insert(app.bundleID)
+        }
     }
 
     func reindex() async {
