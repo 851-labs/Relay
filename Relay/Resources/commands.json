@@ -1,0 +1,153 @@
+[
+  {
+    "id": "cleanshot.open-history",
+    "title": "Open History",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://open-history"
+      }
+    },
+    "keywords": [
+      "screenshots",
+      "history"
+    ]
+  },
+  {
+    "id": "cleanshot.restore-recently-closed",
+    "title": "Restore Recently Closed",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://restore-recently-closed"
+      }
+    },
+    "keywords": [
+      "reopen",
+      "undo",
+      "closed",
+      "screenshot"
+    ]
+  },
+  {
+    "id": "cleanshot.capture-area",
+    "title": "Capture Area",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://capture-area"
+      }
+    },
+    "keywords": [
+      "screenshot",
+      "region"
+    ]
+  },
+  {
+    "id": "cleanshot.capture-window",
+    "title": "Capture Window",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://capture-window"
+      }
+    },
+    "keywords": [
+      "screenshot"
+    ]
+  },
+  {
+    "id": "cleanshot.capture-fullscreen",
+    "title": "Capture Fullscreen",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://capture-fullscreen"
+      }
+    },
+    "keywords": [
+      "screenshot"
+    ]
+  },
+  {
+    "id": "cleanshot.record-screen",
+    "title": "Record Screen",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://record-screen"
+      }
+    },
+    "keywords": [
+      "video",
+      "recording",
+      "gif"
+    ]
+  },
+  {
+    "id": "cleanshot.scrolling-capture",
+    "title": "Scrolling Capture",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://scrolling-capture"
+      }
+    },
+    "keywords": [
+      "screenshot",
+      "scroll"
+    ]
+  },
+  {
+    "id": "cleanshot.capture-text",
+    "title": "Capture Text",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://capture-text"
+      }
+    },
+    "keywords": [
+      "ocr",
+      "text"
+    ]
+  },
+  {
+    "id": "cleanshot.all-in-one",
+    "title": "All in One",
+    "appName": "CleanShot X",
+    "bundleID": "pl.maketheweb.cleanshotx",
+    "action": {
+      "url": {
+        "_0": "cleanshot://all-in-one"
+      }
+    },
+    "keywords": [
+      "capture",
+      "record"
+    ]
+  },
+  {
+    "id": "system.toggle-dark-mode",
+    "title": "Toggle Dark Mode",
+    "appName": "System Settings",
+    "bundleID": "com.apple.systempreferences",
+    "action": {
+      "shell": {
+        "_0": "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
+      }
+    },
+    "keywords": [
+      "appearance",
+      "theme"
+    ]
+  }
+]

@@ -1,0 +1,33 @@
+name: Relay
+options:
+  bundleIdPrefix: so.alexandru
+  deploymentTarget:
+    macOS: "26.0"
+  createIntermediateGroups: true
+targets:
+  Relay:
+    type: application
+    platform: macOS
+    sources:
+      - path: Relay
+    info:
+      path: Relay/Info.plist
+      properties:
+        CFBundleDisplayName: Relay
+        CFBundleName: Relay
+        LSUIElement: true
+        LSMinimumSystemVersion: "26.0"
+        NSAppleEventsUsageDescription: Relay runs commands in other apps.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: so.alexandru.relay
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: ""
+        ENABLE_HARDENED_RUNTIME: NO
+        ENABLE_APP_SANDBOX: NO
+        SWIFT_VERSION: "5.0"
+        SWIFT_STRICT_CONCURRENCY: minimal
+        GENERATE_INFOPLIST_FILE: NO
