@@ -10,8 +10,7 @@
     "keywords": [
       "screenshots",
       "history"
-    ],
-    "symbol": "clock.arrow.circlepath"
+    ]
   },
   {
     "id": "cleanshot.restore-recently-closed",
@@ -26,8 +25,7 @@
       "undo",
       "closed",
       "screenshot"
-    ],
-    "symbol": "arrow.uturn.backward.circle"
+    ]
   },
   {
     "id": "cleanshot.capture-area",
@@ -40,8 +38,7 @@
     "keywords": [
       "screenshot",
       "region"
-    ],
-    "symbol": "rectangle.dashed"
+    ]
   },
   {
     "id": "cleanshot.capture-window",
@@ -53,8 +50,7 @@
     },
     "keywords": [
       "screenshot"
-    ],
-    "symbol": "macwindow"
+    ]
   },
   {
     "id": "cleanshot.capture-fullscreen",
@@ -66,8 +62,7 @@
     },
     "keywords": [
       "screenshot"
-    ],
-    "symbol": "rectangle.inset.filled"
+    ]
   },
   {
     "id": "cleanshot.record-screen",
@@ -81,8 +76,7 @@
       "video",
       "recording",
       "gif"
-    ],
-    "symbol": "record.circle"
+    ]
   },
   {
     "id": "cleanshot.scrolling-capture",
@@ -95,8 +89,7 @@
     "keywords": [
       "screenshot",
       "scroll"
-    ],
-    "symbol": "arrow.up.and.down.square"
+    ]
   },
   {
     "id": "cleanshot.capture-text",
@@ -109,8 +102,7 @@
     "keywords": [
       "ocr",
       "text"
-    ],
-    "symbol": "text.viewfinder"
+    ]
   },
   {
     "id": "cleanshot.all-in-one",
@@ -123,8 +115,7 @@
     "keywords": [
       "capture",
       "record"
-    ],
-    "symbol": "square.grid.2x2"
+    ]
   },
   {
     "id": "system.toggle-dark-mode",
@@ -137,7 +128,6 @@
     "keywords": [
       "appearance",
       "theme"
-    ],
-    "symbol": "circle.lefthalf.filled"
+    ]
   }
 ]

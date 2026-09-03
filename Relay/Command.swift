@@ -40,8 +40,6 @@ nonisolated struct Command: AppEntity, IndexedEntity, Codable, Hashable, Sendabl
     var bundleID: String
     var action: CommandAction
     var keywords: [String] = []
-    /// SF Symbol shown in Relay's own UI (Spotlight always shows the target app icon).
-    var symbol: String?
 
     var displayRepresentation: DisplayRepresentation {
         guard let png = IconCache.pngData(for: bundleID) else {

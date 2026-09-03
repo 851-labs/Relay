@@ -122,7 +122,11 @@ private struct AppDetailView: View {
                         get: { store.isEnabled(command) },
                         set: { store.setEnabled($0, for: command) }
                     )) {
-                        Label(command.title, systemImage: command.symbol ?? "bolt.horizontal")
+                        Label {
+                            Text(command.title)
+                        } icon: {
+                            AppIcon(bundleID: command.bundleID, size: 20)
+                        }
                     }
                 }
             }
