@@ -115,7 +115,9 @@ private struct AppDetailView: View {
     private var appEnabled: Binding<Bool> {
         Binding(
             get: { store.isAppEnabled(app.bundleID) },
-            set: { store.setAppEnabled($0, bundleID: app.bundleID) }
+            // Animate from the mutation so the section's opacity and disabled state transition together;
+            // an `.animation(value:)` on the Section doesn't reach into individual list rows.
+            set: { enabled in withAnimation(.default) { store.setAppEnabled(enabled, bundleID: app.bundleID) } }
         )
     }
 
@@ -155,7 +157,6 @@ private struct AppDetailView: View {
             // Native disabled switches while the app is off, with per-command state kept for when it comes back.
             // Text and icons dim separately since `.disabled` only restyles the controls.
             .disabled(!appIsEnabled)
-            .animation(.default, value: appIsEnabled)
         }
         .formStyle(.grouped)
         .toggleStyle(.switch)
