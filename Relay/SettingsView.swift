@@ -45,14 +45,14 @@ private struct AppDetailView: View {
         Form {
             Section {
                 VStack(spacing: 8) {
-                    AppIcon(bundleID: app.bundleID, size: 96)
+                    AppIcon(bundleID: app.bundleID, size: 56)
                     Text(app.name)
-                        .font(.largeTitle.weight(.bold))
+                        .font(.title2.weight(.bold))
                     Text("^[\(app.commands.count) command](inflect: true)")
                         .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+                .padding(.vertical, 8)
             }
 
             Section("Commands") {
