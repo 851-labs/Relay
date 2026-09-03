@@ -4,6 +4,7 @@ struct SettingsView: View {
     private let store = CommandStore.shared
     @State private var selectedBundleID: String?
     @State private var history = SelectionHistory()
+    @FocusState private var sidebarFocused: Bool
 
     var body: some View {
         NavigationSplitView {
@@ -14,6 +15,8 @@ struct SettingsView: View {
                     AppIcon(bundleID: app.bundleID, size: 20)
                 }
             }
+            .listStyle(.sidebar)
+            .focused($sidebarFocused)
             .navigationSplitViewColumnWidth(min: 200, ideal: 220)
             .toolbar(removing: .sidebarToggle)
         } detail: {
@@ -40,6 +43,8 @@ struct SettingsView: View {
         .frame(minWidth: 720, minHeight: 480)
         .onAppear {
             if selectedBundleID == nil { selectedBundleID = store.apps.first?.bundleID }
+            // Keep the sidebar the focused responder so its selection draws in the accent color.
+            sidebarFocused = true
         }
         .onChange(of: selectedBundleID) { _, bundleID in
             if let bundleID { history.record(bundleID) }
@@ -48,6 +53,7 @@ struct SettingsView: View {
 
     private func navigate(by offset: Int) {
         if let bundleID = history.step(by: offset) { selectedBundleID = bundleID }
+        sidebarFocused = true
     }
 }
 
