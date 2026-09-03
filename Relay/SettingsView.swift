@@ -106,12 +106,11 @@ private struct AppDetailView: View {
             Section {
                 Toggle(isOn: allEnabled) {
                     Label {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(app.name)
-                            Text("Expose ^[\(app.commands.count) command](inflect: true) from \(app.name) to Spotlight.")
-                        }
+                        Text(app.name)
+                        Text("Expose ^[\(app.commands.count) command](inflect: true) from \(app.name) to Spotlight.")
+                            .foregroundStyle(.secondary)
                     } icon: {
-                        AppIcon(bundleID: app.bundleID, size: 40)
+                        AppIcon(bundleID: app.bundleID, size: 28)
                     }
                 }
                 .padding(.vertical, 4)
