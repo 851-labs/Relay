@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     private let store = CommandStore.shared
     @State private var selectedBundleID: String?
+    @State private var history = SelectionHistory()
 
     var body: some View {
         NavigationSplitView {
@@ -23,10 +24,57 @@ struct SettingsView: View {
                                        description: Text("Choose an app to manage the commands Relay exposes to Spotlight."))
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                ControlGroup {
+                    Button { navigate(by: -1) } label: { Label("Back", systemImage: "chevron.left") }
+                        .disabled(!history.canGoBack)
+                        .keyboardShortcut("[", modifiers: .command)
+                    Button { navigate(by: 1) } label: { Label("Forward", systemImage: "chevron.right") }
+                        .disabled(!history.canGoForward)
+                        .keyboardShortcut("]", modifiers: .command)
+                }
+                .labelStyle(.iconOnly)
+            }
+        }
         .frame(minWidth: 720, minHeight: 480)
         .onAppear {
             if selectedBundleID == nil { selectedBundleID = store.apps.first?.bundleID }
         }
+        .onChange(of: selectedBundleID) { _, bundleID in
+            if let bundleID { history.record(bundleID) }
+        }
+    }
+
+    private func navigate(by offset: Int) {
+        if let bundleID = history.step(by: offset) { selectedBundleID = bundleID }
+    }
+}
+
+/// Browser-style back/forward history over sidebar selection.
+private struct SelectionHistory {
+    private var entries: [String] = []
+    private var index = -1
+    /// Set when a change originates from `step(by:)` so `record` doesn't treat it as a new visit.
+    private var ignoreNextRecord = false
+
+    var canGoBack: Bool { index > 0 }
+    var canGoForward: Bool { index < entries.count - 1 }
+
+    mutating func record(_ id: String) {
+        if ignoreNextRecord { ignoreNextRecord = false; return }
+        guard entries.indices.contains(index) == false || entries[index] != id else { return }
+        entries.removeSubrange((index + 1)...)
+        entries.append(id)
+        index = entries.count - 1
+    }
+
+    mutating func step(by offset: Int) -> String? {
+        let target = index + offset
+        guard entries.indices.contains(target) else { return nil }
+        index = target
+        ignoreNextRecord = true
+        return entries[target]
     }
 }
 
