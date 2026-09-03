@@ -11,7 +11,11 @@ struct MenuBarContent: View {
         Divider()
         Button("Settings…") {
             openWindow(id: SettingsWindow.id)
-            NSApplication.shared.activate()
+            // LSUIElement apps don't activate on window open; give the window a beat to exist first.
+            Task {
+                try? await Task.sleep(for: .milliseconds(50))
+                NSApplication.shared.activate()
+            }
         }
         .keyboardShortcut(",")
         Button("Reindex Spotlight") { Task { await store.reindex() } }
