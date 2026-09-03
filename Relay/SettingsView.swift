@@ -42,33 +42,40 @@ private struct AppDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 8) {
-                AppIcon(bundleID: app.bundleID, size: 96)
-                Text(app.name)
-                    .font(.largeTitle.weight(.bold))
-                Text("^[\(app.commands.count) command](inflect: true)")
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.top, 32)
-            .padding(.bottom, 8)
-
-            Form {
-                Section("Commands") {
-                    ForEach(app.commands) { command in
-                        Toggle(isOn: Binding(
-                            get: { store.isEnabled(command) },
-                            set: { store.setEnabled($0, for: command) }
-                        )) {
-                            Label(command.title, systemImage: command.symbol ?? "bolt.horizontal")
-                        }
+        Form {
+            Section {
+                ForEach(app.commands) { command in
+                    Toggle(isOn: Binding(
+                        get: { store.isEnabled(command) },
+                        set: { store.setEnabled($0, for: command) }
+                    )) {
+                        Label(command.title, systemImage: command.symbol ?? "bolt.horizontal")
                     }
                 }
+            } header: {
+                // Lives in the section header so it scrolls with the content but isn't wrapped in a card.
+                VStack(alignment: .leading, spacing: 0) {
+                    VStack(spacing: 8) {
+                        AppIcon(bundleID: app.bundleID, size: 96)
+                        Text(app.name)
+                            .font(.largeTitle.weight(.bold))
+                            .foregroundStyle(.primary)
+                        Text("^[\(app.commands.count) command](inflect: true)")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
+
+                    Text("Commands")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                }
             }
-            .formStyle(.grouped)
-            .toggleStyle(.switch)
         }
+        .formStyle(.grouped)
+        .toggleStyle(.switch)
         .navigationTitle(app.name)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
