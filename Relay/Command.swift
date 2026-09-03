@@ -40,6 +40,8 @@ nonisolated struct Command: AppEntity, IndexedEntity, Codable, Hashable, Sendabl
     var bundleID: String
     var action: CommandAction
     var keywords: [String] = []
+    /// SF Symbol shown in Relay's own UI (Spotlight always shows the target app icon).
+    var symbol: String?
 
     var displayRepresentation: DisplayRepresentation {
         guard let png = IconCache.pngData(for: bundleID) else {
@@ -69,14 +71,14 @@ nonisolated struct CommandQuery: EntityStringQuery {
     func entities(for identifiers: [String]) async throws -> [Command] {
         RelayLog.write("CommandQuery.entities(for:) \(identifiers)")
         let ids = Set(identifiers)
-        return await CommandStore.shared.commands.filter { ids.contains($0.id) }
+        return await CommandStore.shared.enabledCommands.filter { ids.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> [Command] {
-        await CommandStore.shared.commands.filter { $0.matches(string) }
+        await CommandStore.shared.enabledCommands.filter { $0.matches(string) }
     }
 
     func suggestedEntities() async throws -> [Command] {
-        await CommandStore.shared.commands
+        await CommandStore.shared.enabledCommands
     }
 }

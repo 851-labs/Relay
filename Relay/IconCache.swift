@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 import Synchronization
 
 /// PNG renderings of app icons, keyed by bundle identifier.
@@ -32,5 +33,13 @@ nonisolated enum IconCache {
         guard let tiff = rendered.tiffRepresentation,
               let bitmap = NSBitmapImageRep(data: tiff) else { return nil }
         return bitmap.representation(using: .png, properties: [:])
+    }
+}
+
+extension IconCache {
+    @MainActor
+    static func image(for bundleID: String) -> Image? {
+        guard let png = pngData(for: bundleID), let nsImage = NSImage(data: png) else { return nil }
+        return Image(nsImage: nsImage)
     }
 }
