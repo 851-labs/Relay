@@ -119,13 +119,15 @@
   },
   {
     "id": "system.toggle-dark-mode",
-    "title": "Toggle Dark Mode",
+    "title": "Toggle System Appearance",
     "appName": "System Settings",
     "bundleID": "com.apple.systempreferences",
     "action": {
       "shell": "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
     },
     "keywords": [
+      "dark mode",
+      "light mode",
       "appearance",
       "theme"
     ]
