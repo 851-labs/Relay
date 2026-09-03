@@ -1,23 +1,13 @@
 import AppIntents
-import Foundation
 
-enum RelayLog {
-    static func write(_ message: String) {
-        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Logs/Relay.log")
-        let line = "\(Date()) \(message)\n"
-        if let h = try? FileHandle(forWritingTo: url) { h.seekToEndOfFile(); h.write(line.data(using: .utf8)!); try? h.close() }
-        else { try? line.write(to: url, atomically: true, encoding: .utf8) }
-    }
-}
-
-struct RunCommandIntent: AppIntent {
+struct RunCommandIntent: nonisolated AppIntent {
     static let title: LocalizedStringResource = "Run Command"
     static let description = IntentDescription("Runs a Relay command in its target app.")
 
     @Parameter(title: "Command")
     var command: Command
 
-    static var parameterSummary: some ParameterSummary {
+    nonisolated static var parameterSummary: some ParameterSummary {
         Summary("Run \(\.$command)")
     }
 
@@ -30,7 +20,7 @@ struct RunCommandIntent: AppIntent {
 }
 
 /// Fired when a Relay command is selected from Spotlight search results.
-struct OpenCommandIntent: OpenIntent {
+struct OpenCommandIntent: nonisolated OpenIntent {
     static let title: LocalizedStringResource = "Open Command"
 
     @Parameter(title: "Command")
@@ -44,7 +34,7 @@ struct OpenCommandIntent: OpenIntent {
     }
 }
 
-struct RelayShortcuts: AppShortcutsProvider {
+nonisolated struct RelayShortcuts: AppShortcutsProvider {
     static let shortcutTileColor: ShortcutTileColor = .purple
 
     static var appShortcuts: [AppShortcut] {

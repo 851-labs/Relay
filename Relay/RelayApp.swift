@@ -1,24 +1,26 @@
-import SwiftUI
 import AppIntents
+import SwiftUI
 
 @main
 struct RelayApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    private let store = CommandStore.shared
 
     init() {
-        CommandStore.shared.load()
+        let store = store
+        store.load()
         RelayShortcuts.updateAppShortcutParameters()
-        Task { await CommandStore.shared.reindex() }
+        Task { await store.reindex() }
     }
 
     var body: some Scene {
         MenuBarExtra("Relay", systemImage: "bolt.horizontal") {
-            ForEach(CommandStore.shared.commands) { command in
+            ForEach(store.commands) { command in
                 Button("\(command.appName): \(command.title)") { CommandRunner.run(command) }
             }
             Divider()
-            Button("Reindex Spotlight") { Task { await CommandStore.shared.reindex() } }
-            Button("Quit Relay") { NSApp.terminate(nil) }
+            Button("Reindex Spotlight") { Task { await store.reindex() } }
+            Button("Quit Relay") { NSApplication.shared.terminate(nil) }
         }
     }
 }

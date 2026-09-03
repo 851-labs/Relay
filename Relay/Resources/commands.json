@@ -5,9 +5,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://open-history"
-      }
+      "url": "cleanshot://open-history"
     },
     "keywords": [
       "screenshots",
@@ -20,9 +18,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://restore-recently-closed"
-      }
+      "url": "cleanshot://restore-recently-closed"
     },
     "keywords": [
       "reopen",
@@ -37,9 +33,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://capture-area"
-      }
+      "url": "cleanshot://capture-area"
     },
     "keywords": [
       "screenshot",
@@ -52,9 +46,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://capture-window"
-      }
+      "url": "cleanshot://capture-window"
     },
     "keywords": [
       "screenshot"
@@ -66,9 +58,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://capture-fullscreen"
-      }
+      "url": "cleanshot://capture-fullscreen"
     },
     "keywords": [
       "screenshot"
@@ -80,9 +70,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://record-screen"
-      }
+      "url": "cleanshot://record-screen"
     },
     "keywords": [
       "video",
@@ -96,9 +84,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://scrolling-capture"
-      }
+      "url": "cleanshot://scrolling-capture"
     },
     "keywords": [
       "screenshot",
@@ -111,9 +97,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://capture-text"
-      }
+      "url": "cleanshot://capture-text"
     },
     "keywords": [
       "ocr",
@@ -126,9 +110,7 @@
     "appName": "CleanShot X",
     "bundleID": "pl.maketheweb.cleanshotx",
     "action": {
-      "url": {
-        "_0": "cleanshot://all-in-one"
-      }
+      "url": "cleanshot://all-in-one"
     },
     "keywords": [
       "capture",
@@ -141,9 +123,7 @@
     "appName": "System Settings",
     "bundleID": "com.apple.systempreferences",
     "action": {
-      "shell": {
-        "_0": "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
-      }
+      "shell": "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode'"
     },
     "keywords": [
       "appearance",

@@ -9,7 +9,7 @@ Each command is an `AppEntity` indexed into Spotlight with the target app's icon
 ```sh
 brew install xcodegen
 xcodegen generate
-xcodebuild -scheme Relay -configuration Release -derivedDataPath build ENABLE_DEBUG_DYLIB=NO build
+xcodebuild -scheme Relay -configuration Release -derivedDataPath build build
 cp -R build/Build/Products/Release/Relay.app /Applications/
 open /Applications/Relay.app
 ```

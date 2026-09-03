@@ -1,36 +1,48 @@
-import Foundation
-import CoreSpotlight
+import AppIntents
 import AppKit
+import CoreSpotlight
+import Observation
 
-final class CommandStore: @unchecked Sendable {
+@Observable
+final class CommandStore {
     static let shared = CommandStore()
 
     private(set) var commands: [Command] = []
 
-    /// Loads ~/Library/Application Support/Relay/commands.json if present, else the bundled catalog.
+    private init() {}
+
+    /// Loads ~/Library/Application Support/Relay/commands.json if present, else the bundled catalog,
+    /// and primes the icon cache so entity getters can run off the main actor without touching AppKit.
     func load() {
-        let userFile = FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Relay/commands.json")
-        let url = FileManager.default.fileExists(atPath: userFile.path)
+        let userFile = URL.applicationSupportDirectory.appending(path: "Relay/commands.json")
+        let source = FileManager.default.fileExists(atPath: userFile.path)
             ? userFile
-            : Bundle.main.url(forResource: "commands", withExtension: "json")!
+            : Bundle.main.url(forResource: "commands", withExtension: "json")
+
         do {
-            commands = try JSONDecoder().decode([Command].self, from: Data(contentsOf: url))
+            guard let source else { throw CocoaError(.fileNoSuchFile) }
+            commands = try JSONDecoder().decode([Command].self, from: Data(contentsOf: source))
         } catch {
-            NSLog("Relay: failed to load commands: \(error)")
+            RelayLog.write("failed to load commands: \(error)")
             commands = []
         }
+
+        IconCache.prime(bundleIDs: Set(commands.map(\.bundleID)))
     }
 
     func reindex() async {
         do {
-            try await CSSearchableIndex.default().deleteAllSearchableItems()
-            try await CSSearchableIndex.default().indexAppEntities(commands)
-            NSLog("Relay: indexed \(commands.count) commands")
+            let index = CSSearchableIndex.default()
+            try await index.deleteAllSearchableItems()
+            try await index.indexAppEntities(commands)
+            RelayLog.write("indexed \(commands.count) commands")
         } catch {
-            NSLog("Relay: indexing failed: \(error)")
+            RelayLog.write("indexing failed: \(error)")
         }
+    }
+
+    func command(matchingSpotlightIdentifier identifier: String) -> Command? {
+        commands.first { identifier == $0.id || identifier.hasSuffix($0.id) }
     }
 }
 
@@ -42,37 +54,9 @@ enum CommandRunner {
             NSWorkspace.shared.open(url)
         case .shell(let script):
             let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+            process.executableURL = URL(filePath: "/bin/zsh")
             process.arguments = ["-lc", script]
-            try? process.run()
+            do { try process.run() } catch { RelayLog.write("shell failed: \(error)") }
         }
-    }
-}
-
-enum IconCache {
-    private static let lock = NSLock()
-    nonisolated(unsafe) private static var cache: [String: Data] = [:]
-
-    static func pngData(bundleID: String) -> Data? {
-        lock.lock()
-        let cached = cache[bundleID]
-        lock.unlock()
-        if let cached { return cached }
-
-        guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) else { return nil }
-        let icon = NSWorkspace.shared.icon(forFile: appURL.path)
-        let size = NSSize(width: 128, height: 128)
-        let rendered = NSImage(size: size, flipped: false) { rect in
-            icon.draw(in: rect)
-            return true
-        }
-        guard let tiff = rendered.tiffRepresentation,
-              let rep = NSBitmapImageRep(data: tiff),
-              let png = rep.representation(using: .png, properties: [:]) else { return nil }
-
-        lock.lock()
-        cache[bundleID] = png
-        lock.unlock()
-        return png
     }
 }

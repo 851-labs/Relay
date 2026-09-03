@@ -11,20 +11,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 
+    /// Spotlight may deliver a selected indexed item as a CoreSpotlight user activity rather than an `OpenIntent`.
     func application(_ application: NSApplication,
                      continue userActivity: NSUserActivity,
                      restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void) -> Bool {
         RelayLog.write("continue userActivity type=\(userActivity.activityType) userInfo=\(userActivity.userInfo ?? [:])")
         guard userActivity.activityType == CSSearchableItemActionType,
               let identifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String else { return false }
-        // Identifier may be the bare entity id or a system-prefixed form; match on suffix.
-        if let command = CommandStore.shared.commands.first(where: { identifier == $0.id || identifier.hasSuffix($0.id) }) {
-            RelayLog.write("running \(command.id) from Spotlight continuation")
-            CommandRunner.run(command)
-            return true
+        guard let command = CommandStore.shared.command(matchingSpotlightIdentifier: identifier) else {
+            RelayLog.write("no command matched identifier \(identifier)")
+            return false
         }
-        RelayLog.write("no command matched identifier \(identifier)")
-        return false
+        RelayLog.write("running \(command.id) from Spotlight continuation")
+        CommandRunner.run(command)
+        return true
     }
 
     func application(_ application: NSApplication, didFailToContinueUserActivityWithType userActivityType: String, error: any Error) {
