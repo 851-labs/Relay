@@ -6,6 +6,8 @@ struct SettingsView: View {
     @State private var history = SelectionHistory()
     @FocusState private var sidebarFocused: Bool
     @State private var searchText = ""
+    /// Pinned to `.all`; the sidebar is never collapsible (System Settings keeps its sidebar fixed).
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
     /// Apps whose name, or any command title/keyword, matches the search — like System Settings matching pane contents.
     private var visibleApps: [RelayedApp] {
@@ -17,7 +19,7 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             List(visibleApps, selection: $selectedBundleID) { app in
                 Label {
                     Text(app.name)
@@ -28,7 +30,7 @@ struct SettingsView: View {
             .listStyle(.sidebar)
             .searchable(text: $searchText, placement: .sidebar, prompt: "Search")
             .focused($sidebarFocused)
-            .navigationSplitViewColumnWidth(min: 200, ideal: 220)
+            .navigationSplitViewColumnWidth(220)
             .toolbar(removing: .sidebarToggle)
         } detail: {
             Group {
@@ -62,6 +64,9 @@ struct SettingsView: View {
             if selectedBundleID == nil { selectedBundleID = store.apps.first?.bundleID }
             // Keep the sidebar the focused responder so its selection draws in the accent color.
             sidebarFocused = true
+        }
+        .onChange(of: columnVisibility) { _, visibility in
+            if visibility != .all { columnVisibility = .all }
         }
         .onChange(of: selectedBundleID) { _, bundleID in
             if let bundleID { history.record(bundleID) }
