@@ -108,9 +108,7 @@ private struct AppDetailView: View {
                     Label {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(app.name)
-                                .font(.headline)
                             Text("Expose ^[\(app.commands.count) command](inflect: true) from \(app.name) to Spotlight.")
-                                .foregroundStyle(.secondary)
                         }
                     } icon: {
                         AppIcon(bundleID: app.bundleID, size: 40)
