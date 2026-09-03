@@ -17,16 +17,17 @@ struct SettingsView: View {
             .navigationSplitViewColumnWidth(min: 200, ideal: 220)
             .toolbar(removing: .sidebarToggle)
         } detail: {
-            if let app = store.apps.first(where: { $0.bundleID == selectedBundleID }) {
-                AppDetailView(app: app)
-            } else {
-                ContentUnavailableView("Select an App", systemImage: "bolt.horizontal",
-                                       description: Text("Choose an app to manage the commands Relay exposes to Spotlight."))
+            Group {
+                if let app = store.apps.first(where: { $0.bundleID == selectedBundleID }) {
+                    AppDetailView(app: app)
+                } else {
+                    ContentUnavailableView("Select an App", systemImage: "bolt.horizontal",
+                                           description: Text("Choose an app to manage the commands Relay exposes to Spotlight."))
+                }
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                ControlGroup {
+            .toolbar {
+                // Adjacent items in one group share a single glass capsule, like System Settings' back/forward.
+                ToolbarItemGroup(placement: .navigation) {
                     Button { navigate(by: -1) } label: { Label("Back", systemImage: "chevron.left") }
                         .disabled(!history.canGoBack)
                         .keyboardShortcut("[", modifiers: .command)
@@ -34,7 +35,6 @@ struct SettingsView: View {
                         .disabled(!history.canGoForward)
                         .keyboardShortcut("]", modifiers: .command)
                 }
-                .labelStyle(.iconOnly)
             }
         }
         .frame(minWidth: 720, minHeight: 480)
