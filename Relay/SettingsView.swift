@@ -152,9 +152,9 @@ private struct AppDetailView: View {
                 Text("Commands")
                     .opacity(appIsEnabled ? 1 : 0.4)
             }
-            // Inert while the app is off, with per-command state kept for when it comes back. Only the text
-            // and icons dim: fading or disabling the switches themselves makes an "on" switch read as pastel mush.
-            .allowsHitTesting(appIsEnabled)
+            // Native disabled switches while the app is off, with per-command state kept for when it comes back.
+            // Text and icons dim separately since `.disabled` only restyles the controls.
+            .disabled(!appIsEnabled)
             .animation(.default, value: appIsEnabled)
         }
         .formStyle(.grouped)
