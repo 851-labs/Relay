@@ -110,6 +110,8 @@ private struct AppDetailView: View {
     let app: RelayedApp
     private let store = CommandStore.shared
 
+    private var appIsEnabled: Bool { store.isAppEnabled(app.bundleID) }
+
     private var appEnabled: Binding<Bool> {
         Binding(
             get: { store.isAppEnabled(app.bundleID) },
@@ -132,7 +134,7 @@ private struct AppDetailView: View {
                 .padding(.vertical, 4)
             }
 
-            Section("Commands") {
+            Section {
                 ForEach(app.commands) { command in
                     Toggle(isOn: Binding(
                         get: { store.isEnabled(command) },
@@ -143,15 +145,17 @@ private struct AppDetailView: View {
                         } icon: {
                             AppIcon(bundleID: command.bundleID, size: 20)
                         }
+                        .opacity(appIsEnabled ? 1 : 0.4)
                     }
                 }
+            } header: {
+                Text("Commands")
+                    .opacity(appIsEnabled ? 1 : 0.4)
             }
-            // Dimmed and inert while the app is off; per-command state is kept for when it comes back.
-            // Fade uniformly rather than `.disabled`: that repaints "on" switches as pale pastel, which
-            // stacked with the opacity made them read as neither on nor off.
-            .allowsHitTesting(store.isAppEnabled(app.bundleID))
-            .opacity(store.isAppEnabled(app.bundleID) ? 1 : 0.4)
-            .animation(.default, value: store.isAppEnabled(app.bundleID))
+            // Inert while the app is off, with per-command state kept for when it comes back. Only the text
+            // and icons dim: fading or disabling the switches themselves makes an "on" switch read as pastel mush.
+            .allowsHitTesting(appIsEnabled)
+            .animation(.default, value: appIsEnabled)
         }
         .formStyle(.grouped)
         .toggleStyle(.switch)
