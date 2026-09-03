@@ -141,9 +141,9 @@ private struct AppDetailView: View {
                     }
                 }
             }
-        }
             // Dimmed and inert while the app is off; per-command state is kept for when it comes back.
             .disabled(!store.isAppEnabled(app.bundleID))
+        }
         .formStyle(.grouped)
         .toggleStyle(.switch)
         .navigationTitle(app.name)
