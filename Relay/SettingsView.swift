@@ -129,9 +129,10 @@ private struct SelectionHistory {
 private struct GeneralSettingsView: View {
     /// Sidebar selection value for this pane; can't collide with a bundle ID since those are reverse-DNS.
     static let selectionID = "general"
-    static let searchTerms = ["General", "Open at Login", "Launch at Login", "Startup"]
+    static let searchTerms = ["General", "Open at Login", "Launch at Login", "Startup", "Reindex Spotlight", "Spotlight Index"]
 
     @State private var opensAtLogin = SMAppService.mainApp.status == .enabled
+    @State private var isReindexing = false
 
     var body: some View {
         Form {
@@ -140,6 +141,27 @@ private struct GeneralSettingsView: View {
                     get: { opensAtLogin },
                     set: { setOpensAtLogin($0) }
                 ))
+            }
+
+            Section {
+                LabeledContent {
+                    HStack {
+                        if isReindexing {
+                            ProgressView().controlSize(.small)
+                        }
+                        Button("Reindex") {
+                            isReindexing = true
+                            Task {
+                                await CommandStore.shared.reindex()
+                                isReindexing = false
+                            }
+                        }
+                        .disabled(isReindexing)
+                    }
+                } label: {
+                    Text("Spotlight Index")
+                    Text("Rebuild the index if commands are missing from Spotlight or don't respond.")
+                }
             }
         }
         .formStyle(.grouped)

@@ -38,7 +38,6 @@ struct MenuBarContent: View {
             }
         }
         .keyboardShortcut(",")
-        Button("Reindex Spotlight") { Task { await store.reindex() } }
         Divider()
         Button("Quit Relay") { NSApplication.shared.terminate(nil) }
             .keyboardShortcut("q")
