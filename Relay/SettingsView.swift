@@ -1,3 +1,4 @@
+import ServiceManagement
 import SwiftUI
 
 struct SettingsView: View {
@@ -18,13 +19,30 @@ struct SettingsView: View {
         }
     }
 
+    /// General stays visible while searching only if the query matches it or one of its settings.
+    private var showsGeneral: Bool {
+        let query = searchText.trimmingCharacters(in: .whitespaces)
+        return query.isEmpty || GeneralSettingsView.searchTerms.contains { $0.localizedCaseInsensitiveContains(query) }
+    }
+
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            List(visibleApps, selection: $selectedBundleID) { app in
-                Label {
-                    Text(app.name)
-                } icon: {
-                    AppIcon(bundleID: app.bundleID, size: 20)
+            List(selection: $selectedBundleID) {
+                if showsGeneral {
+                    Section {
+                        Label("General", systemImage: "gear")
+                            .tag(GeneralSettingsView.selectionID)
+                    }
+                }
+                Section {
+                    ForEach(visibleApps) { app in
+                        Label {
+                            Text(app.name)
+                        } icon: {
+                            AppIcon(bundleID: app.bundleID, size: 20)
+                        }
+                        .tag(app.bundleID)
+                    }
                 }
             }
             .listStyle(.sidebar)
@@ -34,7 +52,9 @@ struct SettingsView: View {
             .toolbar(removing: .sidebarToggle)
         } detail: {
             Group {
-                if let app = store.apps.first(where: { $0.bundleID == selectedBundleID }) {
+                if selectedBundleID == GeneralSettingsView.selectionID {
+                    GeneralSettingsView()
+                } else if let app = store.apps.first(where: { $0.bundleID == selectedBundleID }) {
                     AppDetailView(app: app)
                 } else {
                     ContentUnavailableView("Select an App", systemImage: "bolt.horizontal",
@@ -61,7 +81,7 @@ struct SettingsView: View {
         }
         .frame(minWidth: 720, minHeight: 480)
         .onAppear {
-            if selectedBundleID == nil { selectedBundleID = store.apps.first?.bundleID }
+            if selectedBundleID == nil { selectedBundleID = GeneralSettingsView.selectionID }
             // Keep the sidebar the focused responder so its selection draws in the accent color.
             sidebarFocused = true
         }
@@ -103,6 +123,43 @@ private struct SelectionHistory {
         index = target
         ignoreNextRecord = true
         return entries[target]
+    }
+}
+
+private struct GeneralSettingsView: View {
+    /// Sidebar selection value for this pane; can't collide with a bundle ID since those are reverse-DNS.
+    static let selectionID = "general"
+    static let searchTerms = ["General", "Open at Login", "Launch at Login", "Startup"]
+
+    @State private var opensAtLogin = SMAppService.mainApp.status == .enabled
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle("Open at Login", isOn: Binding(
+                    get: { opensAtLogin },
+                    set: { setOpensAtLogin($0) }
+                ))
+            }
+        }
+        .formStyle(.grouped)
+        .toggleStyle(.switch)
+        .navigationTitle("General")
+        // The user can also change this in System Settings › General › Login Items.
+        .onAppear { opensAtLogin = SMAppService.mainApp.status == .enabled }
+    }
+
+    private func setOpensAtLogin(_ enabled: Bool) {
+        do {
+            if enabled {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
+            }
+        } catch {
+            RelayLog.write("failed to \(enabled ? "register" : "unregister") login item: \(error)")
+        }
+        opensAtLogin = SMAppService.mainApp.status == .enabled
     }
 }
 
