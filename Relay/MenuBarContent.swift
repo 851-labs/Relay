@@ -29,13 +29,16 @@ struct MenuBarContent: View {
             }
         }
         Divider()
-        Button("Settings…") {
+        Button {
             openWindow(id: SettingsWindow.id)
             // LSUIElement apps don't activate on window open; give the window a beat to exist first.
             Task {
                 try? await Task.sleep(for: .milliseconds(50))
                 NSApplication.shared.activate()
             }
+        } label: {
+            Label("Settings…", systemImage: "gearshape")
+                .labelStyle(.titleAndIcon)
         }
         .keyboardShortcut(",")
         Divider()
