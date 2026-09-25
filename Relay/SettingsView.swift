@@ -30,7 +30,7 @@ struct SettingsView: View {
             List(selection: $selectedBundleID) {
                 if showsGeneral {
                     Section {
-                        Label("General", systemImage: "gear")
+                        Label("General", systemImage: "gearshape")
                             .tag(GeneralSettingsView.selectionID)
                     }
                 }
