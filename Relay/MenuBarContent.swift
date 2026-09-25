@@ -23,8 +23,9 @@ struct MenuBarContent: View {
                 Label {
                     Text(app.name)
                 } icon: {
-                    if let icon = IconCache.menuImage(for: app.bundleID) { icon }
+                    IconCache.menuImage(for: app.bundleID)
                 }
+                .labelStyle(.titleAndIcon)
             }
         }
         Divider()

@@ -45,9 +45,13 @@ extension IconCache {
 
     /// Menu items draw images at their intrinsic size, so shrink the point size to the standard 16pt
     /// menu icon while keeping the 128px bitmap for crisp Retina rendering.
+    /// Non-optional: SwiftUI only bridges a label's icon into an `NSMenuItem` image when it's a plain `Image`,
+    /// not conditional content.
     @MainActor
-    static func menuImage(for bundleID: String) -> Image? {
-        guard let png = pngData(for: bundleID), let nsImage = NSImage(data: png) else { return nil }
+    static func menuImage(for bundleID: String) -> Image {
+        guard let png = pngData(for: bundleID), let nsImage = NSImage(data: png) else {
+            return Image(systemName: "app.dashed")
+        }
         nsImage.size = NSSize(width: 16, height: 16)
         return Image(nsImage: nsImage)
     }
