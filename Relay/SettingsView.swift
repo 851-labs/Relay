@@ -153,7 +153,7 @@ private struct AppDetailView: View {
                             RelayLog.write("running \(command.id) from settings")
                             CommandRunner.run(command)
                         } label: {
-                            Label("Run", systemImage: "play.fill")
+                            Label("Run", systemImage: "play.circle")
                         }
                         .labelStyle(.iconOnly)
                         .buttonStyle(.borderless)
