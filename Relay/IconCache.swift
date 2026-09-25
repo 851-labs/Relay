@@ -42,4 +42,13 @@ extension IconCache {
         guard let png = pngData(for: bundleID), let nsImage = NSImage(data: png) else { return nil }
         return Image(nsImage: nsImage)
     }
+
+    /// Menu items draw images at their intrinsic size, so shrink the point size to the standard 16pt
+    /// menu icon while keeping the 128px bitmap for crisp Retina rendering.
+    @MainActor
+    static func menuImage(for bundleID: String) -> Image? {
+        guard let png = pngData(for: bundleID), let nsImage = NSImage(data: png) else { return nil }
+        nsImage.size = NSSize(width: 16, height: 16)
+        return Image(nsImage: nsImage)
+    }
 }

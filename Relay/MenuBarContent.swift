@@ -6,7 +6,13 @@ struct MenuBarContent: View {
 
     var body: some View {
         ForEach(store.enabledCommands) { command in
-            Button("\(command.appName): \(command.title)") { CommandRunner.run(command) }
+            Button { CommandRunner.run(command) } label: {
+                Label {
+                    Text("\(command.appName): \(command.title)")
+                } icon: {
+                    if let icon = IconCache.menuImage(for: command.bundleID) { icon }
+                }
+            }
         }
         Divider()
         Button("Settings…") {
