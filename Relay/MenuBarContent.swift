@@ -42,8 +42,13 @@ struct MenuBarContent: View {
         }
         .keyboardShortcut(",")
         Divider()
-        Button("Quit") { NSApplication.shared.terminate(nil) }
-            .keyboardShortcut("q")
+        Button {
+            NSApplication.shared.terminate(nil)
+        } label: {
+            Label("Quit", systemImage: "xmark.rectangle")
+                .labelStyle(.titleAndIcon)
+        }
+        .keyboardShortcut("q")
     }
 }
 
