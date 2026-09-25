@@ -138,25 +138,41 @@ private struct AppDetailView: View {
 
             Section {
                 ForEach(app.commands) { command in
-                    Toggle(isOn: Binding(
-                        get: { store.isEnabled(command) },
-                        set: { store.setEnabled($0, for: command) }
-                    )) {
+                    HStack {
                         Label {
                             Text(command.title)
                         } icon: {
                             AppIcon(bundleID: command.bundleID, size: 20)
                         }
                         .opacity(appIsEnabled ? 1 : 0.4)
+
+                        Spacer()
+
+                        // Always available, even for disabled commands, so users can see what a command does before exposing it.
+                        Button {
+                            RelayLog.write("running \(command.id) from settings")
+                            CommandRunner.run(command)
+                        } label: {
+                            Label("Run", systemImage: "play.fill")
+                        }
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.borderless)
+                        .help("Run \(command.title) now")
+
+                        Toggle(command.title, isOn: Binding(
+                            get: { store.isEnabled(command) },
+                            set: { store.setEnabled($0, for: command) }
+                        ))
+                        .labelsHidden()
+                        // Native disabled switch while the app is off, with per-command state kept for when it comes back.
+                        // Scoped to the switch so the Run button stays usable.
+                        .disabled(!appIsEnabled)
                     }
                 }
             } header: {
                 Text("Commands")
                     .opacity(appIsEnabled ? 1 : 0.4)
             }
-            // Native disabled switches while the app is off, with per-command state kept for when it comes back.
-            // Text and icons dim separately since `.disabled` only restyles the controls.
-            .disabled(!appIsEnabled)
         }
         .formStyle(.grouped)
         .toggleStyle(.switch)
